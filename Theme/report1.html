@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <title>課題</title>
+    <script src="https://unpkg.com/three@0.137.4/build/three.min.js"></script>
+    <script src="https://unpkg.com/three@0.137.4/examples/js/controls/OrbitControls.js"></script>
+</head>
+<body>
+    <script>
+        //ページの読み込みを待つ
+        window.addEventListener('DOMContentLoaded',init);
+
+        function init(){
+            //表示するサイズを設定
+            const width = 700;
+            const height = 500;
+
+            //レンダラーを作成
+            var renderer = new THREE.WebGLRenderer();
+            document.body.appendChild(renderer.domElement);
+            renderer.setSize(width,height);
+
+            //シーンを作成
+            const scene = new THREE.Scene();
+
+            //カメラを作成
+            const camera = new THREE.PerspectiveCamera(45,width/height,1,1000);
+            //カメラの座標を設定
+            camera.position.set(0,0,+100)
+
+            //カメラコントローラーを作成（動かせるように)
+            const controls = new THREE.OrbitControls(camera,document.body);
+
+            //並行光源
+            var directionalLight1 = new THREE.DirectionalLight(0xffffff);
+            directionalLight1.position.set(5,5,5);
+
+            //並行光源をシーンに追加
+            scene.add(directionalLight1);
+
+            //並行光源2
+            var directionalLight2 = new THREE.DirectionalLight(0x888888);
+            directionalLight2.position.set(-2,-2,10);
+
+            //並行光源2をシーンに追加
+            scene.add(directionalLight2);
+
+           //表示する図形を作成
+           //一つ目の球体を表示する
+            const spheregeometry = new THREE.SphereGeometry( 5, 32, 32 );
+            const spherematerial = new THREE.MeshBasicMaterial( {color: 0xFF0000} );
+            const sphere1 = new THREE.Mesh( spheregeometry, spherematerial );
+            scene.add(sphere1);
+
+            //二つ目の球体を表示する
+            const sphere2geometry = new THREE.SphereGeometry( 5, 32, 32 );
+            const sphere2material = new THREE.MeshBasicMaterial( {color:0xAFEEEE,wireframe: true} );
+            const sphere2 = new THREE.Mesh( sphere2geometry, sphere2material );
+            scene.add(sphere2);
+
+            //直方体を表示する
+            const cubegeometry = new THREE.BoxGeometry( 10, 10, 10 );
+            const cubematerial = new THREE.MeshBasicMaterial( {color: 0x00FF7F} );
+            const cube = new THREE.Mesh(cubegeometry, cubematerial);
+            scene.add(cube);
+
+            //ドーナツ型を表示する
+            const torusgeometry = new THREE.TorusGeometry( 5, 2, 16, 100 );
+            const torusmaterial = new THREE.MeshBasicMaterial( { color: 0xFFFF00,wireframe: true } );
+            const torus = new THREE.Mesh( torusgeometry, torusmaterial );
+            scene.add( torus );
+
+            //キャラクターを作成する(球体で)
+            const sphere3geometry = new THREE.SphereGeometry( 5, 32, 32 );
+            const sphere3material = new THREE.MeshBasicMaterial( {color: 0xFFE4E1} );
+            const sphere3 = new THREE.Mesh( sphere3geometry, sphere3material );
+            sphere3.position.set(0,0,0);
+            scene.add( sphere3 );
+
+            const sphere4geometry = new THREE.SphereGeometry( 3, 32, 32 );
+            const sphere4material = new THREE.MeshBasicMaterial( {color: 0xFFE4E1} );
+            const sphere4 = new THREE.Mesh( sphere4geometry, sphere4material );
+            sphere4.position.set(-5,5,0);
+            scene.add( sphere4 );
+
+            const sphere5geometry = new THREE.SphereGeometry( 3, 32, 32 );
+            const sphere5material = new THREE.MeshBasicMaterial( {color: 0xFFE4E1} );
+            const sphere5 = new THREE.Mesh( sphere5geometry, sphere5material );
+            sphere5.position.set(5,5,0);
+            scene.add(sphere5);
+
+            //不思議な図形を追加
+            var torusKnotGeometry = new THREE.TorusKnotGeometry( 1.5, 0.3, 20, 6, 3, 5 ); 
+            var torusKnotMaterial = new THREE. MeshPhongMaterial( { color: 0xFFFF00,wireframe: true } );
+            var torusKnot = new THREE.Mesh( torusKnotGeometry, torusKnotMaterial );
+            torusKnot.position.set( 8,0, 75);
+            scene.add( torusKnot );
+
+            var torusKnot2Geometry = new THREE.TorusKnotGeometry( 1.5, 0.3, 20, 6, 3, 5 ); 
+            var torusKnot2Material = new THREE. MeshPhongMaterial( { color: 0xB13546,wireframe: true } );
+            var torusKnot2 = new THREE.Mesh( torusKnot2Geometry, torusKnot2Material );
+            torusKnot2.position.set( -8,0, 75);
+            scene.add( torusKnot2 );
+
+            
+            update();
+
+            function update(){
+                //レンダリング
+                renderer.render(scene,camera);
+                requestAnimationFrame(update);
+                
+                //それぞれの図形を違う方向に動かす
+                sphere1.position.z += 0.05;
+                sphere1.position.x += 0.05;
+                sphere1.position.y -= 0.05;
+
+                sphere2.position.z += 0.05;
+                sphere2.position.x += 0.05;
+                sphere2.position.y += 0.05;
+
+                cube.position.z += 0.05;
+                cube.position.x -= 0.05;
+                cube.position.y += 0.05;
+
+                torus.position.z += 0.05;
+                torus.position.x -= 0.05;
+                torus.position.y -= 0.05;
+
+                   // 箱を回転させる
+                torusKnot.rotation.x += 0.01;
+                torusKnot.rotation.y += 0.01;
+                torusKnot2.rotation.x += 0.01;
+                torusKnot2.rotation.y += 0.01;
+
+
+                
+            }
+        }
+    </script>
+<h1>第1回レポート</h1>
+2132146 : 山下結貴
+
+<h2>工夫した点</h2>
+<ul>
+    <li>できるだけ多くの種類の図形を実装した。</li>
+    <li>講義の中で紹介されていた技術（画面をマウスで動かせることなど）を実装した。</li>
+    <li>奥行き感が同じに見えても、違う奥行きであることを理解できるような配置で図形を配置した。</li>
+    <li>図形の回転や座標を変化させることで、動きのある作品になるようにした。</li>
+</ul>
+</body>
+</html>
