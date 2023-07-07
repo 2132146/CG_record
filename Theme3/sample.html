@@ -1,0 +1,143 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.152.2/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three@0.152.2/examples/jsm/"
+        }
+      }
+    </script>
+    <script type="module">
+      import * as THREE from "three";
+      import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
+      // サイズを指定
+      const width = 960;
+      const height = 540;
+
+      //角度
+      let rot = 0; 
+
+      // レンダラーを作成
+      const canvasElement = document.querySelector("#myCanvas");
+      const renderer = new THREE.WebGLRenderer({
+        canvas: canvasElement,
+      });
+      renderer.setPixelRatio(window.devicePixelRatio);
+      renderer.setSize(width, height);
+
+      // シーンを作成
+      const scene = new THREE.Scene();
+
+      // カメラを作成
+      const camera = new THREE.PerspectiveCamera(45, width / height);
+      camera.position.set(200, 300, 0);
+      // カメラコントローラーを作成
+      const controls = new OrbitControls(camera, canvasElement);
+      controls.autoRotate = true;
+      controls.maxDistance = 1000; // ズーム最大距離
+      controls.maxPolarAngle = (Math.PI * 0.8) / 2; // 上限の角度
+      controls.minPolarAngle = 0;
+
+      
+      // 星屑を作成します (カメラの動きをわかりやすくするため)
+      createStarField();
+
+
+      function createStarField() {
+        // 頂点情報を格納する配列
+        const vertices = [];
+
+        // 配置する範囲
+        const SIZE = 3000;
+        // 配置する個数
+        const LENGTH = 1000;
+
+        for (let i = 0; i < LENGTH; i++) {
+          const x = SIZE * (Math.random() - 0.5);
+          const y = SIZE * (Math.random() - 0.5);
+          const z = SIZE * (Math.random() - 0.5);
+
+          vertices.push(x, y, z);
+        }
+
+        // 形状データを作成
+        const geometry = new THREE.BufferGeometry();
+        geometry.setAttribute("position", new THREE.Float32BufferAttribute(vertices, 3));
+
+        // マテリアルを作成
+        const material = new THREE.PointsMaterial({
+          // 一つ一つのサイズ
+          size: 10,
+          // 色
+          color: 0xffffff,
+        });
+
+        // 物体を作成
+        const mesh = new THREE.Points(geometry, material);
+        scene.add(mesh);
+      }
+
+      
+      
+      // 形状データを作成
+      const geometry = new THREE.PlaneGeometry(400, 400, 20, 20);
+
+      // マテリアルを作成
+      const material = new THREE.MeshBasicMaterial({ wireframe: true });
+
+      // 物体を作成
+      const mesh = new THREE.Mesh(geometry, material);
+      mesh.rotation.x = Math.PI / 2; // 地面らしい角度にする
+      scene.add(mesh);
+
+      tick();
+
+      // 毎フレーム時に実行されるループイベントです
+      function tick() {
+        rot += 1;
+        controls.update();
+
+        // ラジアンに変換する
+        const radian = (rot * Math.PI) / 180;
+
+        // 角度に応じてカメラの位置を設定
+        // camera.position.x = 1000 * Math.sin(radian);
+        // camera.position.z = 1000 * Math.cos(radian);
+        // 原点方向を見つめる
+        camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+
+        // ジオメトリの頂点座標情報
+        const position = mesh.geometry.attributes.position;
+        for (let i = 0; i < position.count; i++) {
+          // 各頂点のXYZ座標
+          const x = position.getX(i);
+          const y = position.getY(i);
+          const z = position.getZ(i);
+
+          // 高さを計算（PlaneGeometryの場合はZ座標）
+          const nextZ = Math.sin(x * 0.03 + y * 0.02 + Date.now() * 0.002) * 30;
+
+          position.setX(i, x); // xとyは変更していないので省略しても大丈夫
+          position.setY(i, y);
+          position.setZ(i, nextZ);
+        }
+
+        // 頂点の更新が必要なことを伝える
+        position.needsUpdate = true;
+
+        // レンダリング
+        renderer.render(scene, camera);
+
+        requestAnimationFrame(tick);
+      }
+    </script>
+  </head>
+  <body>
+    <canvas id="myCanvas" style="cursor: move"></canvas>
+  </body>
+</html>
