@@ -43,7 +43,7 @@
       controls.minPolarAngle = 0;
 
       
-      // 星屑を作成します (カメラの動きをわかりやすくするため)
+      // 星屑を作成
       createStarField();
 
 
@@ -91,23 +91,18 @@
 
       // 物体を作成
       const mesh = new THREE.Mesh(geometry, material);
-      mesh.rotation.x = Math.PI / 2; // 地面らしい角度にする
+      mesh.rotation.x = Math.PI / 2; 
       scene.add(mesh);
 
       tick();
 
-      // 毎フレーム時に実行されるループイベントです
+      // 毎フレーム時に実行されるループイベント
       function tick() {
         rot += 1;
         controls.update();
 
         // ラジアンに変換する
         const radian = (rot * Math.PI) / 180;
-
-        // 角度に応じてカメラの位置を設定
-        // camera.position.x = 1000 * Math.sin(radian);
-        // camera.position.z = 1000 * Math.cos(radian);
-        // 原点方向を見つめる
         camera.lookAt(new THREE.Vector3(0, 0, 0));
 
 
@@ -138,6 +133,16 @@
     </script>
   </head>
   <body>
+    <h1>最終レポート</h1>
+    2132146 : 山下結貴
+
+    <h2>実現しようとしたこと</h2>
+    <ul>
+      <li>講義内で紹介されていたように、パーティクルを表示させた。</li>
+      <li>大量のパーティクルを表示することで、星のように見えるように工夫した。</li>
+      <li>前回までの課題ではカメラを動かしていたが、今回は図形自体を動かす(波のように動く)ようにした。</li>
+      <li>マウスを動かすことで、カメラの距離や角度を動かせるようにした。</li>
+    </ul>
     <canvas id="myCanvas" style="cursor: move"></canvas>
   </body>
 </html>
